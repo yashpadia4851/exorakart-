@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import Header from "../components/Header.jsx";
 // Hero image (top section)
 // Brands / services section image (bottom section)
 // import brandsImage from "../../assets/c__Users_yashp_AppData_Roaming_Cursor_User_workspaceStorage_b489b3c3cd0439162e0d795c5a0dd829_images_Screenshot_2026-03-16_231046-168ccf87-aba2-4ee3-bdd9-e3a444885562.png";
-
-const navItems = ["Home", "About", "Service", "Contact us"];
 
 const brands = [
   {
@@ -72,32 +71,7 @@ function HomePage() {
 
   return (
     <div className="min-h-screen bg-[#fffdf5] flex flex-col">
-      {/* Header */}
-      <header className="w-full border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto flex items-center justify-between py-4 px-4 md:px-6">
-          {/* Left logo / icon */}
-          <div className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-full bg-linear-to-tr from-rose-500 to-amber-400 flex items-center justify-center text-white font-bold text-lg">
-              A
-            </div>
-            <span className="hidden sm:inline text-sm font-semibold tracking-wide text-slate-800">
-              Arvian Business Solutions
-            </span>
-          </div>
-
-          {/* Right nav links */}
-          <nav className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-medium text-slate-700">
-            {navItems.map((item) => (
-              <button
-                key={item}
-                className="px-3 py-1.5 rounded-full border border-slate-200 hover:border-amber-400 hover:text-amber-600 transition-colors cursor-pointer"
-              >
-                {item}
-              </button>
-            ))}
-          </nav>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero section */}
       <main className="flex-1">
