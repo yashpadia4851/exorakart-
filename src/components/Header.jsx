@@ -2,9 +2,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const navItems = [
   { label: "Home", path: "/" },
-  { label: "About", path: "#" },
+  { label: "About", path: "/about" },
   { label: "Service", path: "/services" },
-  { label: "Contact us", path: "#" },
+  { label: "Contact us", path: "/contact" },
 ];
 
 function Header() {
@@ -20,10 +20,10 @@ function Header() {
           onClick={() => navigate("/")}
         >
           <div className="h-9 w-9 rounded-full bg-gradient-to-tr from-rose-500 to-amber-400 flex items-center justify-center text-white font-bold text-lg">
-            A
+            E
           </div>
           <span className="hidden sm:inline text-sm font-semibold tracking-wide text-slate-800">
-            Arvian Business Solutions
+            Exorakart Business Solutions
           </span>
         </div>
 
@@ -31,17 +31,14 @@ function Header() {
         <nav className="flex items-center gap-3 md:gap-4 text-xs md:text-sm font-medium text-slate-700">
           {navItems.map((item) => {
             const isActive =
-              item.path !== "#" &&
-              (location.pathname === item.path ||
-                (item.path !== "/" && location.pathname.startsWith(item.path)));
-
-            const isClickable = item.path !== "#";
+              location.pathname === item.path ||
+              (item.path !== "/" && location.pathname.startsWith(item.path));
 
             return (
               <button
                 key={item.label}
                 type="button"
-                onClick={() => isClickable && navigate(item.path)}
+                onClick={() => navigate(item.path)}
                 className={`px-3 py-1.5 rounded-full border border-slate-200 transition-colors cursor-pointer ${
                   isActive
                     ? "bg-amber-50 text-amber-700 border-amber-400"

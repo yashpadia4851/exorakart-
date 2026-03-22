@@ -1,9 +1,11 @@
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
+import AboutPage from "./pages/AboutPage.jsx";
 import AuthPage from "./pages/AuthPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import ServicesPage from "./pages/ServicesPage.jsx";
+import ContactPage from "./pages/ContactPage.jsx";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -30,6 +32,26 @@ function App() {
           element={
             isAuthenticated ? (
               <ServicesPage />
+            ) : (
+              <Navigate to="/auth" replace />
+            )
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            isAuthenticated ? (
+              <AboutPage />
+            ) : (
+              <Navigate to="/auth" replace />
+            )
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            isAuthenticated ? (
+              <ContactPage />
             ) : (
               <Navigate to="/auth" replace />
             )

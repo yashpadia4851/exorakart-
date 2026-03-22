@@ -1,5 +1,44 @@
-import { motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import Header from "../components/Header.jsx";
+
+/** Raster images in `src/assets` (png/jpg/webp only) become slides; captions cycle. */
+const SERVICE_SHOWCASE_CAPTIONS = [
+  {
+    title: "Catalog & listing optimisation",
+    description:
+      "Polished listings, compliant content, and structured catalog updates that keep your Flipkart storefront competitive.",
+  },
+  {
+    title: "Campaigns & visibility",
+    description:
+      "Planned ad spend, creative refreshes, and performance reviews so your brand stays visible to the right buyers.",
+  },
+  {
+    title: "Account health & operations",
+    description:
+      "Day‑to‑day monitoring of metrics, inventory signals, and marketplace policies—so issues are caught early.",
+  },
+  {
+    title: "Growth on your terms",
+    description:
+      "Monthly packages and add‑ons that scale with you—from essentials to full account management.",
+  },
+];
+
+const showcaseAssetUrls = Object.values(
+  import.meta.glob("../assets/*.{png,jpg,jpeg,webp}", {
+    eager: true,
+    import: "default",
+  })
+);
+
+const serviceShowcaseSlides = showcaseAssetUrls.map((src, i) => {
+  const c = SERVICE_SHOWCASE_CAPTIONS[i % SERVICE_SHOWCASE_CAPTIONS.length];
+  return { src, title: c.title, description: c.description };
+});
+
+const SHOWCASE_INTERVAL_MS = 4500;
 
 const monthlyPlans = [
   {
@@ -45,6 +84,22 @@ const alaCartePlans = [
 ];
 
 function ServicesPage() {
+  const [showcaseIndex, setShowcaseIndex] = useState(0);
+  const slideCount = serviceShowcaseSlides.length;
+
+  const activeSlide = useMemo(() => {
+    if (slideCount === 0) return null;
+    return serviceShowcaseSlides[showcaseIndex % slideCount];
+  }, [showcaseIndex, slideCount]);
+
+  useEffect(() => {
+    if (slideCount <= 1) return undefined;
+    const id = window.setInterval(() => {
+      setShowcaseIndex((i) => (i + 1) % slideCount);
+    }, SHOWCASE_INTERVAL_MS);
+    return () => window.clearInterval(id);
+  }, [slideCount]);
+
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col">
       <Header />
@@ -81,6 +136,106 @@ function ServicesPage() {
             </motion.p>
           </div>
         </section>
+
+        {/* Auto-rotating service visuals — raster images only from src/assets */}
+        {slideCount > 0 && activeSlide && (
+        <section className="relative overflow-hidden bg-gradient-to-b from-[#ecfdf5]/40 via-[#f8fafc] to-[#f1f5f9] py-12 md:py-16 border-b border-slate-100">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.35]"
+            aria-hidden
+            style={{
+              backgroundImage:
+                "radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.12), transparent 45%), radial-gradient(circle at 80% 60%, rgba(148, 163, 184, 0.15), transparent 40%)",
+            }}
+          />
+          <div className="relative max-w-6xl mx-auto px-4 md:px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.35 }}
+              transition={{ duration: 0.55 }}
+              className="text-center mb-8 md:mb-10"
+            >
+              <p className="text-xs font-semibold tracking-[0.2em] uppercase text-emerald-600 mb-2">
+                What we deliver
+              </p>
+              <h2 className="text-xl md:text-2xl font-semibold text-slate-900 mb-2">
+                See how we support your Flipkart account
+              </h2>
+              <p className="text-sm md:text-base text-slate-600 max-w-2xl mx-auto">
+                Visuals rotate automatically. Add PNG, JPG, or WebP files to{" "}
+                {/* <code className="text-xs bg-white/80 px-1.5 py-0.5 rounded border border-slate-200">
+                  src/assets
+                </code>{" "} */}
+                to show them here.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.6, delay: 0.05 }}
+              className="relative mx-auto max-w-4xl"
+            >
+              <div className="absolute -inset-3 md:-inset-5 rounded-[2rem] bg-emerald-200/25 blur-2xl" />
+              <div className="relative rounded-3xl border border-slate-200/80 bg-white shadow-xl shadow-slate-200/60 overflow-hidden">
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500" />
+                <div className="relative aspect-[16/10] md:aspect-[21/9] bg-gradient-to-br from-slate-50 to-emerald-50/30">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.img
+                      key={`${showcaseIndex}-${activeSlide.src}`}
+                      src={activeSlide.src}
+                      alt={activeSlide.title}
+                      initial={{ opacity: 0, x: 72 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -72 }}
+                      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute inset-0 w-full h-full object-contain p-6 md:p-10 select-none"
+                      draggable={false}
+                    />
+                  </AnimatePresence>
+                </div>
+                <div className="border-t border-slate-100 bg-slate-50/90 backdrop-blur-sm px-5 py-4 md:px-7 md:py-5">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={showcaseIndex}
+                      initial={{ opacity: 0, x: 40 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -40 }}
+                      transition={{ duration: 0.45, ease: "easeOut" }}
+                    >
+                      <h3 className="text-base md:text-lg font-semibold text-slate-900 mb-1">
+                        {activeSlide.title}
+                      </h3>
+                      <p className="text-sm text-slate-600 leading-relaxed max-w-3xl">
+                        {activeSlide.description}
+                      </p>
+                    </motion.div>
+                  </AnimatePresence>
+                  {slideCount > 1 && (
+                    <div className="flex items-center justify-center gap-2 mt-4">
+                      {serviceShowcaseSlides.map((_, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          aria-label={`Show slide ${i + 1}`}
+                          onClick={() => setShowcaseIndex(i)}
+                          className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                            i === showcaseIndex
+                              ? "w-8 bg-emerald-500"
+                              : "w-2 bg-slate-300 hover:bg-slate-400"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </section>
+        )}
 
         {/* Monthly packages */}
         <section className="bg-[#f1f5f9] py-12 md:py-16">
@@ -241,6 +396,7 @@ function ServicesPage() {
     </div>
   );
 }
+
 
 export default ServicesPage;
 
