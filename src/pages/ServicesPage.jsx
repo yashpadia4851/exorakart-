@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 
 /** Raster images in `src/assets` (png/jpg/webp only) become slides; captions cycle. */
 const SERVICE_SHOWCASE_CAPTIONS = [
@@ -415,6 +416,8 @@ function ServicesPage() {
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }

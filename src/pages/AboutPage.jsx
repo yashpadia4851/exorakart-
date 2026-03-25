@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 
 const stats = [
   { number: "5+", label: "Years Experience", desc: "Deep expertise in marketplace operations" },
@@ -136,7 +137,7 @@ function AboutPage() {
         </section>
 
         {/* CTA section */}
-        <section className="bg-slate-900 py-12 md:py-16">
+        {/* <section className="bg-slate-900 py-12 md:py-16">
           <div className="max-w-6xl mx-auto px-4 md:px-6">
             <motion.div
               initial={{ opacity: 0, y: 25 }}
@@ -162,34 +163,10 @@ function AboutPage() {
               </motion.button>
             </motion.div>
           </div>
-        </section>
+        </section> */}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-300 py-8 md:py-10 mt-auto">
-        <div className="max-w-6xl mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-rose-500 to-amber-400 flex items-center justify-center text-white font-bold text-lg">
-                E
-              </div>
-              <span className="text-sm font-semibold tracking-wide">
-              Exorakart Business Solutions
-              </span>
-            </div>
-            <p className="text-xs md:text-sm text-slate-400">
-              Helping brands grow on Flipkart and other marketplaces with structured,
-              data‑driven account management.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4 text-xs md:text-sm">
-            <span className="text-slate-500">
-              © {new Date().getFullYear()} Exorakart. All rights reserved.
-            </span>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import Header from "../components/Header.jsx";
+import Footer from "../components/Footer.jsx";
 
 function ContactPage() {
   return (
@@ -190,7 +191,7 @@ function ContactPage() {
                       Call Enquiries
                     </p>
                     <p className="text-lg font-semibold text-slate-900 mt-3">
-                      +91-8209644311
+                      +91-8871093590
                     </p>
                     <p className="text-sm text-slate-600 mt-1">
                       Mon-Sat, 9:30AM - 6:30PM
@@ -202,6 +203,8 @@ function ContactPage() {
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }
