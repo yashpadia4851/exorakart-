@@ -8,7 +8,14 @@ import ServicesPage from "./pages/ServicesPage.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem("isAuthenticated") === "true";
+  });
+
+  const handleAuthSuccess = () => {
+    localStorage.setItem("isAuthenticated", "true");
+    setIsAuthenticated(true);
+  };
 
   return (
     <BrowserRouter>
@@ -25,7 +32,7 @@ function App() {
         />
         <Route
           path="/auth"
-          element={<AuthPage onAuthSuccess={() => setIsAuthenticated(true)} />}
+          element={<AuthPage onAuthSuccess={handleAuthSuccess} />}
         />
         <Route
           path="/services"
