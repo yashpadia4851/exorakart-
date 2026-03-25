@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 
-/** Raster images in `src/assets` (png/jpg/webp only) become slides; captions cycle. */
+/** Raster images in `src/assets` (png/jpg/webp only) become slides; captions cycle unless overridden per file. */
 const SERVICE_SHOWCASE_CAPTIONS = [
   {
     title: "Catalog & listing optimisation",
@@ -27,17 +27,80 @@ const SERVICE_SHOWCASE_CAPTIONS = [
   },
 ];
 
-const showcaseAssetUrls = Object.values(
+const BRAND_STORE_SLIDE = {
+  variant: "brandStore",
+  title: "What is a Brand Store?",
+  paragraphs: [
+    "A Brand Store is a dedicated set of pages that allows the brand to showcase its products and information to customers without any interference from other brands' communications.",
+    "It enables brands to connect with their target customers and improve brand engagement by creating a brand-centric buying experience.",
+    "The brand can build a dedicated microsite experience within Flipkart.",
+    "Brand Stores offer brands the opportunity to create a truly immersive and personalized shopping experience for their customers.",
+    "With the ability to custom-design their storefronts, brands can showcase their unique brand story and ethos, leaving a lasting impression on shoppers.",
+  ],
+};
+
+const ENRICHED_LISTING_FILENAME =
+  "WhatsApp Image 2026-03-20 at 10.07.09 PM.jpeg";
+
+const ENRICHED_LISTING_SLIDE = {
+  variant: "enriched",
+  title: "Enriched listing",
+  pairs: [
+    {
+      left: "Enriched listing",
+      right: "* Portfolio for Business Development / Brand Growth",
+    },
+    {
+      left: "* Growth Listing Visibility",
+      right: "* Competitive Advantage",
+    },
+    {
+      left: "* Increase in Customer Engagement",
+      right: "* Avoid Cancellations and Returns",
+    },
+    {
+      left: "* Sales Growth",
+      right: "* Seamless Transition",
+    },
+  ],
+};
+
+function assetBasename(path) {
+  const parts = path.replace(/\\/g, "/").split("/");
+  return parts[parts.length - 1] ?? "";
+}
+
+const showcaseAssetEntries = Object.entries(
   import.meta.glob("../assets/*.{png,jpg,jpeg,webp}", {
     eager: true,
     import: "default",
   }),
-);
-
-const serviceShowcaseSlides = showcaseAssetUrls.map((src, i) => {
-  const c = SERVICE_SHOWCASE_CAPTIONS[i % SERVICE_SHOWCASE_CAPTIONS.length];
-  return { src, title: c.title, description: c.description };
+).filter(([path]) => {
+  const base = assetBasename(path);
+  if (/^logo\.png$/i.test(base)) return false;
+  return true;
 });
+
+function buildSlideFromAsset([path, src], index) {
+  const base = assetBasename(path);
+
+  if (base === "what.jpeg") {
+    return { src, ...BRAND_STORE_SLIDE };
+  }
+  if (base === ENRICHED_LISTING_FILENAME) {
+    return { src, ...ENRICHED_LISTING_SLIDE };
+  }
+
+  const c = SERVICE_SHOWCASE_CAPTIONS[index % SERVICE_SHOWCASE_CAPTIONS.length];
+  return {
+    src,
+    variant: "default",
+    title: c.title,
+    description: c.description,
+  };
+}
+
+const serviceShowcaseSlides = showcaseAssetEntries.map(buildSlideFromAsset);
 
 const SHOWCASE_INTERVAL_MS = 4500;
 
@@ -211,13 +274,56 @@ function ServicesPage() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -40 }}
                         transition={{ duration: 0.45, ease: "easeOut" }}
+                        className="text-left"
                       >
-                        <h3 className="text-base md:text-lg font-semibold text-slate-900 mb-1">
-                          {activeSlide.title}
-                        </h3>
-                        <p className="text-sm text-slate-600 leading-relaxed max-w-3xl">
-                          {activeSlide.description}
-                        </p>
+                        {activeSlide.variant === "brandStore" && (
+                          <>
+                            <h3 className="text-base md:text-lg font-semibold text-slate-900 mb-3">
+                              {activeSlide.title}
+                            </h3>
+                            <div className="space-y-3 text-sm text-slate-600 leading-relaxed max-w-3xl">
+                              {activeSlide.paragraphs.map((p, idx) => (
+                                <p key={idx}>{p}</p>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                        {activeSlide.variant === "enriched" && (
+                          <>
+                            <h3 className="text-base md:text-lg font-semibold text-slate-900 mb-3">
+                              {activeSlide.title}
+                            </h3>
+                            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+                              <table className="w-full min-w-[280px] text-left text-xs sm:text-sm">
+                                <tbody>
+                                  {activeSlide.pairs.map((row, i) => (
+                                    <tr
+                                      key={i}
+                                      className="border-b border-slate-100 last:border-b-0"
+                                    >
+                                      <td className="align-top px-3 py-2.5 text-slate-700 w-1/2">
+                                        {row.left}
+                                      </td>
+                                      <td className="align-top px-3 py-2.5 text-slate-700 w-1/2 border-l border-slate-100">
+                                        {row.right}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </>
+                        )}
+                        {activeSlide.variant === "default" && (
+                          <>
+                            <h3 className="text-base md:text-lg font-semibold text-slate-900 mb-1">
+                              {activeSlide.title}
+                            </h3>
+                            <p className="text-sm text-slate-600 leading-relaxed max-w-3xl">
+                              {activeSlide.description}
+                            </p>
+                          </>
+                        )}
                       </motion.div>
                     </AnimatePresence>
                     {slideCount > 1 && (
